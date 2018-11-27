@@ -32,7 +32,11 @@ sam local start-api --port 3003 &
 
 SAM_PID=$!
 
-sleep 10
+if [[ $CONTINUOUS_INTEGRATION ]]; then
+	#give it a chance to download the docker image
+	echo "CI: Sleeping for 20"
+	sleep 20
+fi
 
 echo "Running: http://127.0.0.1:3003/test.cfm"
 http_code=$(curl -s -o /tmp/result.txt -w '%{http_code}' http://127.0.0.1:3003/test.cfm;)
