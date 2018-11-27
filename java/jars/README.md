@@ -1,0 +1,1 @@
+The lucee jar should be placed in this folder.
