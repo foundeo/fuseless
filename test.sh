@@ -33,13 +33,19 @@ sam local start-api --port 3003 &
 SAM_PID=$!
 
 
+#give it a chance to startup
+echo -e "Sleeping for 5...\n"
+sleep 5
+
+
 echo "Running: http://127.0.0.1:3003/test.cfm"
 http_code=$(curl -s -o /tmp/result.txt -w '%{http_code}' http://127.0.0.1:3003/test.cfm;)
 echo "Finished with Status: $http_code "
+echo -e "\n-----\n"
 #output the result
 cat /tmp/result.txt
 
-echo -e "\n"
+echo -e "\n-----\n"
 
 kill $SAM_PID
 
