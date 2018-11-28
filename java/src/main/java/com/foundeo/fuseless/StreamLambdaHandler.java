@@ -36,6 +36,18 @@ public class StreamLambdaHandler implements RequestStreamHandler {
 
     static {
         try {
+            try {
+                //redirecting System.out to a file because lucee logs a bunch of stuff with it
+                //this is causing sam local to have issues 
+                File outLog = new File("/tmp/system.out.log");
+                outLog.createNewFile();
+                System.setOut(new java.io.PrintStream(outLog));
+                
+            } catch (Exception e) {
+                LOG.error("Error redirecting system.out", e);
+            }
+            
+
             LOG.info("StreamLambdaHandler initializing");
             handler = CFMLLambdaContainerHandler.getAwsProxyHandler();
             
@@ -46,8 +58,7 @@ public class StreamLambdaHandler implements RequestStreamHandler {
                 System.setProperty("lucee.web.dir", "/tmp/lucee/web/");
                 System.setProperty("lucee.extensions.install", "false");
                 System.setProperty("lucee.base.dir", "/tmp/lucee/server/");
-                //System.setProperty("http.proxyHost","192.168.2.8");
-                //System.setProperty("http.proxyPort", "7777");
+                
                 //felix configuration props: http://felix.apache.org/documentation/subprojects/apache-felix-framework/apache-felix-framework-configuration-properties.html
                 String felix_cache_locking = System.getenv("FELIX_CACHE_LOCKING");
                 if (felix_cache_locking != null) {
