@@ -114,11 +114,6 @@ public class StreamLambdaHandler implements RequestStreamHandler {
     public void handleRequest(InputStream inputStream, OutputStream outputStream, Context context)
             throws IOException {
         
-        try {
-            Thread.sleep(50000);    
-        } catch(Exception e) {
-            //no
-        }
         
         handler.proxyStream(inputStream, outputStream, context);
         outputStream.close();
