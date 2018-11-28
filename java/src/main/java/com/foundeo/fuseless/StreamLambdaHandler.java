@@ -14,6 +14,7 @@ import javax.servlet.FilterRegistration;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.EnumSet;
 
 import org.apache.log4j.Logger;
@@ -36,17 +37,6 @@ public class StreamLambdaHandler implements RequestStreamHandler {
 
     static {
         try {
-            try {
-                //redirecting System.out to a file because lucee logs a bunch of stuff with it
-                //this is causing sam local to have issues 
-                File outLog = new File("/tmp/system.out.log");
-                outLog.createNewFile();
-                System.setOut(new java.io.PrintStream(outLog));
-                
-            } catch (Exception e) {
-                LOG.error("Error redirecting system.out", e);
-            }
-            
 
             LOG.info("StreamLambdaHandler initializing");
             handler = CFMLLambdaContainerHandler.getAwsProxyHandler();
@@ -55,6 +45,20 @@ public class StreamLambdaHandler implements RequestStreamHandler {
             handler.onStartup(servletContext -> {
                 long startTime = System.currentTimeMillis();
                 LOG.info("StreamLambdaHandler onStartup");
+                PrintStream systemOUT = System.out;
+                try {
+                    //redirecting System.out to a file because lucee logs a bunch of stuff with it
+                    //this is causing sam local to have issues since it uses System.out to look for the 
+                    //response
+                    System.setOut(new PrintStream(new OutputStream() {
+                        public void write(int b) {
+                        //DO NOTHING
+                        }
+                    }));
+                } catch (Exception e) {
+                    LOG.error("Error redirecting system.out", e);
+                }
+
                 System.setProperty("lucee.web.dir", "/tmp/lucee/web/");
                 System.setProperty("lucee.extensions.install", "false");
                 System.setProperty("lucee.base.dir", "/tmp/lucee/server/");
@@ -83,6 +87,12 @@ public class StreamLambdaHandler implements RequestStreamHandler {
                     LOG.error("StreamLambdaHandler onStartup exception", t);
                 }
                 long startupComplete = System.currentTimeMillis();
+                try {
+                    //put System.out back to default PrintStream
+                    System.setOut(systemOUT);
+                } catch (Exception e) {
+                    LOG.error("Error putting back system.out", e);
+                }
                 LOG.info("StreamLambdaHandler onStartup complete: " + (startupComplete-startTime));
             });
         } catch (ContainerInitializationException e) {
@@ -103,6 +113,13 @@ public class StreamLambdaHandler implements RequestStreamHandler {
     @Override
     public void handleRequest(InputStream inputStream, OutputStream outputStream, Context context)
             throws IOException {
+        
+        try {
+            Thread.sleep(50000);    
+        } catch(Exception e) {
+            //no
+        }
+        
         handler.proxyStream(inputStream, outputStream, context);
         outputStream.close();
     }
