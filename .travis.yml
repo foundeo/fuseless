@@ -9,3 +9,7 @@ before_script:
 - chmod +x ./test.sh
 script:
 - ./test.sh
+env:
+  global:
+    - AWS_ACCESS_KEY_ID=EMPTY
+    - AWS_SECRET_ACCESS_KEY=EMPTY
