@@ -21,23 +21,35 @@
 <div class="container">
 	<h2 id="getting-started">Getting Started</h2>
 	<p>Let's get right to it, you want to run your existing code on AWS Lambda...</p> 
-	<p><strong>Download the FuseLess Template</strong></p> 
+	<h4>Download the FuseLess Template</h4> 
 	<p>Start by <a href="https://github.com/foundeo/fuseless-template/archive/master.zip">downloading a zip</a> of the <a href="https://github.com/foundeo/fuseless-template/">FuseLess Template</a> repository. Then extract it somewhere locally.</p>  
-	<p><strong>Download Lucee &amp; FuseLess Jars</strong></p>
+	<h4>Download Lucee &amp; FuseLess Jars</h4>
 	<p>If you are on linux or a mac you can just run the <code>init.sh</code> script in the FuseLess Template zip and it will take care of it. If you are on Windows take a look at <code>jars/README.md</code>.</p>
-	<blockquote>
-		Currently only Lucee is supported, it may be possible to get Adobe ColdFusion running on Lambda as well, but the size of the jar files would really need to be trimmed down to fit in the <em>250mb</em> code size limit. It would take a lot of experimentation to get it working, but I wouldn't say it is impossible.
-	</blockquote>
-	<p><strong>Add CFML</strong></p>
+	<div class="row">
+		<div class="col-md-1">&nbsp;</div>
+		<div class="col-md-10">
+			<blockquote>
+				Currently only Lucee is supported, it may be possible to get Adobe ColdFusion running on Lambda as well, but the size of the jar files would really need to be trimmed down to fit in the <em>250mb</em> code size limit. It would take a lot of experimentation to get it working, but I wouldn't say it is impossible.
+			</blockquote>
+		</div>
+	</div>
+	<h4>Add CFML</h4>
 	<p>The fun part... add some CFML to the <code>cfml/app/</code>folder.</p>
-	<p><strong>Package it up</strong></p>
-	<p>To package it up with all the jar depenedencies you will need to use <a href="https://gradle.org/install/">download and install Gradle</a>. 
+	<h4>Package it up</h4>
+	<p>To package it up with all the jar depenedencies you will need to use <a href="https://gradle.org/install/" rel="nofollow">download and install Gradle</a>. 
 	<p>Once you have it installed from the root of the template folder run the following command in Terminal or Command Prompt:</p>
 	<pre>gradle build</pre>
 	
 	<p>At this point you will now have a CFML serverless application all packaged up in a zip file 🎉 </p>
 
 	<p>The zip file is located in <code>build/distributions/fuseless-template.zip</code> it can be uploaded to Lambda or tested locally using <code>sam local</code></p>
+
+	<h2 id="testing">Testing</h2>
+	<p>There are two ways you can test your code - many people test directly on AWS Lambda because it is the only way to replicate the environment. You may find it more convenient to test locally however, for this you can use the <strong>AWS Sam CLI</strong></p>
+	<p>First you will need to install <code>sam</code>, follow <a href="https://github.com/awslabs/aws-sam-cli/blob/develop/docs/installation.rst" rel="nofollow">these instructions</a>.</p>
+	<p>Once <code>sam</code> is installed and working you can simply run the following command from your Terminal or Command Prompt:</p>
+	<pre>sam local start-api</pre>
+	<p>This will start a local AWS API Gateway instance on port 3000 (by default). When you make a HTTP request it will spin up an emulated Java AWS Lambda docker container on each invocation. So you take a <em>Cold Start</em> initialization hit on every request in this mode.</p>
 
 
 	<h2 id="performance">Cold Starts &amp; Performance</h2>
