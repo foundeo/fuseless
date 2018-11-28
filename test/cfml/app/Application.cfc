@@ -9,7 +9,7 @@ component {
 		
 		writeOutput("AWS Request ID: #getLambdaContext().getAwsRequestId()# #cgi.request_method# Lucee #server.lucee.version#");
 		
-		logger("Testing Logger");
+		//logger("Testing Logger");
 	}
 
 	public function getLambdaContext() {
