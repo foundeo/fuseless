@@ -1,0 +1,64 @@
+<!doctype html>
+<html>
+<head>
+	<title>FuseLess - Serverless CFML for AWS Lambda</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<link href="https://stackpath.bootstrapcdn.com/bootswatch/4.1.3/sketchy/bootstrap.min.css" rel="stylesheet" integrity="sha384-5cy8WdlNAGqQwyB33aLiqJoRQQxZsc3TDUkSTahHAx2gMK3o0te7Xqm+nNLe4Ou3" crossorigin="anonymous">
+</head>
+<body>
+
+<div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center bg-light">
+  <div class="col-md-5 p-lg-5 mx-auto my-5">
+    <h1 class="display-4 font-weight-normal">FuseLess</h1>
+    <p class="lead font-weight-normal">Tools for running Serverless CFML Lambda Functions</p>
+    <a class="btn btn-outline-secondary" href="https://github.com/foundeo/fuseless-template">FuseLess Template</a>
+    <a class="btn btn-outline-secondary" href="https://github.com/foundeo/fuseless">FuseLess Core</a>
+  </div>
+  <div class="product-device shadow-sm d-none d-md-block"></div>
+  <div class="product-device product-device-2 shadow-sm d-none d-md-block"></div>
+</div>
+
+<div class="container">
+	<h2 id="getting-started">Getting Started</h2>
+	<p>Let's get right to it, you want to run your existing code on AWS Lambda...</p> 
+	<p><strong>Download the FuseLess Template</strong></p> 
+	<p>Start by <a href="https://github.com/foundeo/fuseless-template/archive/master.zip">downloading a zip</a> of the <a href="https://github.com/foundeo/fuseless-template/">FuseLess Template</a> repository. Then extract it somewhere locally.</p>  
+	<p><strong>Download Lucee &amp; FuseLess Jars</strong></p>
+	<p>If you are on linux or a mac you can just run the <code>init.sh</code> script in the FuseLess Template zip and it will take care of it. If you are on Windows take a look at <code>jars/README.md</code>.</p>
+	<blockquote>
+		Currently only Lucee is supported, it may be possible to get Adobe ColdFusion running on Lambda as well, but the size of the jar files would really need to be trimmed down to fit in the <em>250mb</em> code size limit. It would take a lot of experimentation to get it working, but I wouldn't say it is impossible.
+	</blockquote>
+	<p><strong>Add CFML</strong></p>
+	<p>The fun part... add some CFML to the <code>cfml/app/</code>folder.</p>
+	<p><strong>Package it up</strong></p>
+	<p>To package it up with all the jar depenedencies you will need to use <a href="https://gradle.org/install/">download and install Gradle</a>. 
+	<p>Once you have it installed from the root of the template folder run the following command in Terminal or Command Prompt:</p>
+	<pre>gradle build</pre>
+	
+	<p>At this point you will now have a CFML serverless application all packaged up in a zip file 🎉 </p>
+
+	<p>The zip file is located in <code>build/distributions/fuseless-template.zip</code> it can be uploaded to Lambda or tested locally using <code>sam local</code></p>
+
+
+	<h2 id="performance">Cold Starts &amp; Performance</h2>
+	<p>No matter what language a lambda function is written in, one of the things you will have to deal with is the cold start performance. I have found that the Cold Start time averages around 2 seconds, which is not too bad. Once the lambda is warm, it can serve many additional requests at very high performance (I've seen CFML execution times in the single digit miliseconds with FuseLess!).</p>
+	<p>Ways to minimize the Cold Start Performance hit:</p>
+	<ul>
+		<li>Increase the amount of RAM that you give the lambda function</li>
+		<li>Decrease the size of your code zip (it has to download this so smaller code size means smaller cold start times). That is why it uses lucee light, instead of the full version.</li>
+		<li>Future improvements in Lucee 6 - the roadmap for Lucee 6 looks like it would allow for even better cold start times.</li>
+	</ul>
+
+	<h2 id="about">About</h2>
+	<div class="row">
+		<div class="col-sm-6">
+			<p>FuseLess was built by <a href="https://foundeo.com/">Foundeo Inc.</a></p>
+		</div>
+		<div class="col-sm-6 text-right">
+			<a href="https://foundeo.com/"><img src="https://cfdocs.org/assets/img/foundeo.png"></a>
+		</div>
+	
+</div>
+
+</body>
+</html>
