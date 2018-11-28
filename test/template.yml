@@ -9,6 +9,7 @@ Resources:
       CodeUri: ./build/distributions/test.zip
       Runtime: java8
       Timeout: 100
+      MemorySize: 512
       Events:
         GetResource:
           Type: Api
