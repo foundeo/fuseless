@@ -28,7 +28,7 @@ cd test
 
 gradle build
 
-sam local start-api --port 3003 &
+sam local start-api --port 3003 --debug &
 
 SAM_PID=$!
 
