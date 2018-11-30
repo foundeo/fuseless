@@ -66,11 +66,13 @@
 	<h2 id="faq">Frequently Asked Questions</h2>
 	
 	<h4>How big is the function code?</h4>
-	<p>A minimal deployment is around <strong>20mb</strong>! We are working to make this even smaller.</p>
+	<p>A minimal deployment is currently around <strong>20mb</strong>! We are working to make this even smaller.</p>
 	<h4>Do all CFML tags/function work?</h4>
-	<p>Currently FuseLess bundles Lucee Light, which does not include any extensions so tags such as <code>cfdocument</code> will not work unless you add the extension.</p>
+	<p>Currently FuseLess bundles Lucee Light, which does not include any extensions so tags such as <code>cfdocument</code>, <code>cfsearch</code>, etc will not work unless you add the extension.</p>
 	<h4>How do I add Lucee Extensions?</h4>
 	<p>We are looking into ways to make this easy, <a href="https://foundeo.com/consulting/coldfusion/" title="ColdFusion Consulting Contact">contact Foundeo</a> for assistance.</p>
+	<h4>What other limitations are there?</h4>
+	<p>Lambda has several limits or constraints which are <a href="https://docs.aws.amazon.com/lambda/latest/dg/limits.html">well documented</a>. For example 15 minutes is the maximum execution time, you can only write to the <code>/tmp</code> directory (tip: use <code>ram://</code> instead), 50mb zipped package size.</p>
 
 
 	<h2 id="about">About</h2>
