@@ -13,6 +13,8 @@
     <p class="lead font-weight-normal">Tools for running Serverless CFML Lambda Functions</p>
     <a class="btn btn-outline-secondary" href="https://github.com/foundeo/fuseless-template">FuseLess Template</a>
     <a class="btn btn-outline-secondary" href="https://github.com/foundeo/fuseless">FuseLess Core</a>
+    <br><br>
+    <p>built by:<br><a href="https://foundeo.com/"><img src="https://cfdocs.org/assets/img/foundeo.png"></a></p>
   </div>
   <div class="product-device shadow-sm d-none d-md-block"></div>
   <div class="product-device product-device-2 shadow-sm d-none d-md-block"></div>
@@ -61,16 +63,34 @@
 		<li>Future improvements in Lucee 6 - the roadmap for Lucee 6 looks like it would allow for even better cold start times.</li>
 	</ul>
 
+	<h2 id="faq">Frequently Asked Questions</h2>
+	
+	<h4>How big is the function code?</h4>
+	<p>A minimal deployment is around <strong>20mb</strong>! We are working to make this even smaller.</p>
+	<h4>Do all CFML tags/function work?</h4>
+	<p>Currently FuseLess bundles Lucee Light, which does not include any extensions so tags such as <code>cfdocument</code> will not work unless you add the extension.</p>
+	<h4>How do I add Lucee Extensions?</h4>
+	<p>We are looking into ways to make this easy, <a href="https://foundeo.com/consulting/coldfusion/" title="ColdFusion Consulting Contact">contact Foundeo</a> for assistance.</p>
+
+
 	<h2 id="about">About</h2>
 	<div class="row">
 		<div class="col-sm-6">
-			<p>FuseLess was built by <a href="https://foundeo.com/">Foundeo Inc.</a></p>
+			<p>FuseLess was built by <a href="https://foundeo.com/">Foundeo Inc.</a> for questions, comments, support? <a href="https://foundeo.com/consulting/coldfusion/" title="ColdFusion Consulting Contact">Contact Foundeo Inc.</a> </p>
 		</div>
 		<div class="col-sm-6 text-right">
 			<a href="https://foundeo.com/"><img src="https://cfdocs.org/assets/img/foundeo.png"></a>
 		</div>
 	
 </div>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-82573-22"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
+  gtag('config', 'UA-82573-22');
+</script>
 </body>
 </html>
