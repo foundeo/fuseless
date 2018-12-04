@@ -28,6 +28,7 @@ import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.EnumSet;
+import java.util.Enumeration;
 import java.util.concurrent.CountDownLatch;
 
 import java.io.*;
@@ -56,6 +57,8 @@ public class CFMLLambdaContainerHandler<RequestType, ResponseType>
                                                                                          new AwsProxySecurityContextWriter(),
                                                                                          new AwsProxyExceptionHandler()
                                                                                          );
+
+        newHandler.setLogFormatter(new ApacheCombinedServletLogFormatter<>());
 
         return newHandler;
     }
@@ -94,7 +97,6 @@ public class CFMLLambdaContainerHandler<RequestType, ResponseType>
         req.setAttribute("lambdaContext", lambdaContext);
         try {
             LOG.debug("CFMLLambdaContainerHandler handleRequest: " + req.getRequestURI());
-            
             StreamLambdaHandler.getCFMLServlet().service(req, httpServletResponse);
             
         } catch (Throwable t) {

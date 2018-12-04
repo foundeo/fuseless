@@ -30,4 +30,39 @@ public class RequestWrapper extends HttpServletRequestWrapper {
         return false;
     }
 
+    @Override
+    public String getServerName() {
+        try {
+            String serverName = super.getServerName();
+            if (serverName != null) {
+                return serverName;
+            } else {
+                return "null";
+            }
+        } catch (NullPointerException e) {
+            return "null";
+        }
+    }
+
+    
+
+    
+    @Override
+    public String getHeader(String name) {
+        try {
+            return super.getHeader(name);
+        } catch (NullPointerException e) {
+            return null;
+        }
+    }
+
+    @Override
+    public String getProtocol() {
+        try {
+            return super.getProtocol();
+        } catch (NullPointerException e) {
+            return "LAMBDA/1.0";
+        }
+    }
+
 }

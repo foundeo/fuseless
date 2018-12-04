@@ -65,8 +65,43 @@
 
 	<h2 id="faq">Frequently Asked Questions</h2>
 	
+	<h4>How fast is it?</h4>
+	<p>Running a simple Hello World CFML can execute on lambda as fast as <strong>3ms</strong>.</p>
 	<h4>How big is the function code?</h4>
 	<p>A minimal deployment is currently around <strong>20mb</strong>! We are working to make this even smaller.</p>
+	<h4>How much RAM is required?</h4>
+	<p>It can work with as little as 256mb of ram but ColdStart times will be very high. Here are some possible Cold Start Request Times for different amounts of RAM</p>
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>RAM</th>
+				<th>Avg Cold Start Time</th>
+				<th>Avg Warm Request Time</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>256 MB</td>
+				<td>6 sec</td>
+				<td>20 ms</td>
+			</tr>
+			<tr>
+				<td>512 MB</td>
+				<td>2-3 sec</td>
+				<td>15 ms</td>
+			</tr>
+			<tr>
+				<td>1024 MB</td>
+				<td>1.5 sec</td>
+				<td>10 ms</td>
+			</tr>
+			<tr>
+				<td>2048 MB</td>
+				<td>0.8 sec</td>
+				<td>8 ms</td>
+			</tr>
+		</tbody>
+	</table>
 	<h4>Do all CFML tags/function work?</h4>
 	<p>Currently FuseLess bundles Lucee Light, which does not include any extensions so tags such as <code>cfdocument</code>, <code>cfsearch</code>, etc will not work unless you add the extension.</p>
 	<h4>How do I add Lucee Extensions?</h4>

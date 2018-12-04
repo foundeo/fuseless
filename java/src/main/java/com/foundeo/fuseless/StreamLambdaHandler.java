@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ByteArrayInputStream;
 import java.util.EnumSet;
 
 import org.apache.log4j.Logger;
@@ -60,9 +62,15 @@ public class StreamLambdaHandler implements RequestStreamHandler {
                 }
 
                 System.setProperty("lucee.web.dir", "/tmp/lucee/web/");
-                System.setProperty("lucee.extensions.install", "false");
                 System.setProperty("lucee.base.dir", "/tmp/lucee/server/");
+                String lucee_extensions_install = System.getenv("LUCEE_EXTENSIONS_INSTALL");
+                if (lucee_extensions_install == null) {
+                    System.setProperty("lucee.extensions.install", "false");    
+                } else {
+                    System.setProperty("lucee.extensions.install", lucee_extensions_install);    
+                }
                 
+                //felix.storage.clean?
                 //felix configuration props: http://felix.apache.org/documentation/subprojects/apache-felix-framework/apache-felix-framework-configuration-properties.html
                 String felix_cache_locking = System.getenv("FELIX_CACHE_LOCKING");
                 if (felix_cache_locking != null) {
@@ -114,8 +122,30 @@ public class StreamLambdaHandler implements RequestStreamHandler {
     public void handleRequest(InputStream inputStream, OutputStream outputStream, Context context)
             throws IOException {
         
-        
-        handler.proxyStream(inputStream, outputStream, context);
-        outputStream.close();
+        FuseLessContext ctx = new FuseLessContext(context);
+        handler.proxyStream(inputStream, outputStream, ctx);
     }
+
+    public void handleEventRequest(InputStream inputStream, OutputStream outputStream, Context context)
+            throws IOException {
+        
+        FuseLessContext ctx = new FuseLessContext(context);
+
+        ByteArrayOutputStream result = new ByteArrayOutputStream();
+        byte[] buffer = new byte[1024];
+        int length;
+        while ((length = inputStream.read(buffer)) != -1) {
+            result.write(buffer, 0, length);
+        }
+        String inputString = result.toString("UTF-8");
+        inputStream.close();
+        
+        ctx.setEventPayload(inputString);
+
+        InputStream in = new ByteArrayInputStream(inputString.getBytes("UTF-8"));
+
+        handler.proxyStream(in, outputStream, ctx);
+    }
+
+
 }

@@ -39,7 +39,7 @@ sleep 5
 
 
 echo "Running: http://127.0.0.1:3003/test.cfm"
-http_code=$(curl -s -o /tmp/result.txt -w '%{http_code}' http://127.0.0.1:3003/test.cfm;)
+http_code=$(curl --verbose -s --header "Content-Type: application/json" --request POST --data '{"x":1}' -o /tmp/result.txt -w '%{http_code}' http://127.0.0.1:3003/test.cfm;)
 echo "Finished with Status: $http_code "
 echo -e "\n-----\n"
 #output the result
@@ -51,8 +51,8 @@ kill $SAM_PID
 
 #echo "Testing Events"
 
-#sam local generate-event s3 > /tmp/test-event.json
-#sam local invoke FuselessTest --event /tmp/test-event.json
+sam local generate-event s3 put > /tmp/test-event.json
+sam local invoke FuselessTestEvent --event /tmp/test-event.json
 
 
 

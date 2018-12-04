@@ -19,6 +19,17 @@ Resources:
       Environment:
         Variables:
           FELIX_CACHE_BUFSIZE: 16384
+  FuselessTestEvent:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: com.foundeo.fuseless.StreamLambdaHandler::handleEventRequest
+      CodeUri: ./build/distributions/test.zip
+      Runtime: java8
+      Timeout: 100
+      MemorySize: 512
+      Environment:
+        Variables:
+          FELIX_CACHE_BUFSIZE: 16384
 
 
 
