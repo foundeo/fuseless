@@ -60,13 +60,14 @@
 	<ul>
 		<li>Increase the amount of RAM that you give the lambda function</li>
 		<li>Decrease the size of your code zip (it has to download this so smaller code size means smaller cold start times). That is why it uses lucee light, instead of the full version.</li>
+		<li>Reduce number of CFML files that must be compiled for the request. On the first request your CFML must be compiled into Java Bytecode, it is cached for subsequent use, but every cold start will have this hit. You can <a href="https://www.youtube.com/watch?v=Yjy3bQJgphA" rel="nofollow">pre-compile</a> your CFML to avoid this.</li> 
 		<li>Future improvements in Lucee 6 - the roadmap for Lucee 6 looks like it would allow for even better cold start times.</li>
 	</ul>
 
 	<h2 id="faq">Frequently Asked Questions</h2>
 	
 	<h4>How fast is it?</h4>
-	<p>Running a simple Hello World CFML can execute on lambda as fast as <strong>3ms</strong>.</p>
+	<p>Running a simple Hello World CFML can execute on lambda in as low as <strong>~3ms</strong>.</p>
 	<h4>How big is the function code?</h4>
 	<p>A minimal deployment is currently around <strong>20mb</strong>! We are working to make this even smaller.</p>
 	<h4>How much RAM is required?</h4>
@@ -76,29 +77,24 @@
 			<tr>
 				<th>RAM</th>
 				<th>Avg Cold Start Time</th>
-				<th>Avg Warm Request Time</th>
 			</tr>
 		</thead>
 		<tbody>
 			<tr>
 				<td>256 MB</td>
 				<td>6 sec</td>
-				<td>20 ms</td>
 			</tr>
 			<tr>
 				<td>512 MB</td>
 				<td>2-3 sec</td>
-				<td>15 ms</td>
 			</tr>
 			<tr>
 				<td>1024 MB</td>
 				<td>1.5 sec</td>
-				<td>10 ms</td>
 			</tr>
 			<tr>
 				<td>2048 MB</td>
 				<td>0.8 sec</td>
-				<td>8 ms</td>
 			</tr>
 		</tbody>
 	</table>
