@@ -48,7 +48,7 @@
 
 	<h2 id="testing">Testing</h2>
 	<p>There are two ways you can test your code - many people test directly on AWS Lambda because it is the only way to replicate the environment. You may find it more convenient to test locally however, for this you can use the <strong>AWS Sam CLI</strong></p>
-	<p>First you will need to install <code>sam</code>, follow <a href="https://github.com/awslabs/aws-sam-cli/blob/develop/docs/installation.rst" rel="nofollow">these instructions</a>.</p>
+	<p>First you will need to install <code>sam</code>, follow <a href="https://aws.amazon.com/serverless/sam/" rel="nofollow">these instructions</a>.</p>
 	<p>Once <code>sam</code> is installed and working you can simply run the following command from your Terminal or Command Prompt:</p>
 	<pre>sam local start-api</pre>
 	<p>This will start a local AWS API Gateway instance on port 3000 (by default). When you make a HTTP request it will spin up an emulated Java AWS Lambda docker container on each invocation. So you take a <em>Cold Start</em> initialization hit on every request in this mode.</p>
