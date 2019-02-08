@@ -27,6 +27,10 @@ import lucee.loader.engine.CFMLEngine;
 import javax.servlet.*;
 import javax.servlet.http.HttpServlet;
 
+import com.amazonaws.xray.AWSXRay;
+import com.amazonaws.xray.entities.Subsegment;
+import com.amazonaws.xray.entities.Segment;
+
 
 import lucee.loader.servlet.CFMLServlet;
 
@@ -37,9 +41,13 @@ public class StreamLambdaHandler implements RequestStreamHandler {
 
     private static HttpServlet cfmlServlet = null;
 
+    public static boolean ENABLE_XRAY = false;
+
     static {
         try {
-
+            if (System.getenv("FUSELESS_ENABLE_XRAY") != null && System.getenv("FUSELESS_ENABLE_XRAY").equals("true")) {
+                ENABLE_XRAY = true;
+            }
             LOG.info("StreamLambdaHandler initializing");
             handler = CFMLLambdaContainerHandler.getAwsProxyHandler();
             
@@ -106,7 +114,10 @@ public class StreamLambdaHandler implements RequestStreamHandler {
         } catch (ContainerInitializationException e) {
             // if we fail here. We re-throw the exception to force another cold start
             e.printStackTrace();
+            
             throw new RuntimeException("StreamLambdaHandler Could not initialize the container", e);
+        } finally {
+            
         }
     }
 
@@ -121,7 +132,6 @@ public class StreamLambdaHandler implements RequestStreamHandler {
     @Override
     public void handleRequest(InputStream inputStream, OutputStream outputStream, Context context)
             throws IOException {
-        
         FuseLessContext ctx = new FuseLessContext(context);
         handler.proxyStream(inputStream, outputStream, ctx);
     }

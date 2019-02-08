@@ -30,6 +30,13 @@ import java.security.PrivilegedExceptionAction;
 import java.util.EnumSet;
 import java.util.Enumeration;
 import java.util.concurrent.CountDownLatch;
+import java.util.HashMap;
+import java.util.Map;
+
+
+import com.amazonaws.xray.AWSXRay;
+import com.amazonaws.xray.entities.Segment;
+import com.amazonaws.xray.entities.Subsegment;
 
 import java.io.*;
 
@@ -38,7 +45,7 @@ public class CFMLLambdaContainerHandler<RequestType, ResponseType>
         extends AwsLambdaServletContainerHandler<RequestType, ResponseType, AwsProxyHttpServletRequest, AwsHttpServletResponse> {
 
     private static final Logger LOG = Logger.getLogger(CFMLLambdaContainerHandler.class);
-
+    
     /**
      * Returns a new instance of an CFMLLambdaContainerHandler initialized to work with <code>AwsProxyRequest</code>
      * and <code>AwsProxyResponse</code> objects.
@@ -59,6 +66,8 @@ public class CFMLLambdaContainerHandler<RequestType, ResponseType>
                                                                                          );
 
         newHandler.setLogFormatter(new ApacheCombinedServletLogFormatter<>());
+
+        
 
         return newHandler;
     }
@@ -95,16 +104,49 @@ public class CFMLLambdaContainerHandler<RequestType, ResponseType>
         httpServletRequest.setServletContext(new ServletContextWrapper(getServletContext()));
         RequestWrapper req = new RequestWrapper((javax.servlet.http.HttpServletRequest)httpServletRequest);
         req.setAttribute("lambdaContext", lambdaContext);
+        Object seg = null;
         try {
+            if (StreamLambdaHandler.ENABLE_XRAY) {
+                seg = AWSXRay.beginSubsegment("FuseLess " + req.getRequestURI());
+                
+                Map<String, Object> requestAttributes = new HashMap<String, Object>();
+                requestAttributes.put("url", req.getRequestURL().toString());
+                requestAttributes.put("method", req.getMethod());
+                String header = req.getHeader("User-Agent");
+                if (header != null) {
+                    requestAttributes.put("user_agent", header);
+                }
+                header = req.getHeader("X-Forwarded-For");
+                if (header != null) {
+                    header = header.split(",")[0].trim();
+                    requestAttributes.put("client_ip", header);
+                    requestAttributes.put("x_forwarded_for", true);   
+                } else {
+                    if (req.getRemoteAddr() != null) {
+                        requestAttributes.put("client_ip", req.getRemoteAddr());
+                    }
+                }
+                ((Subsegment)seg).putHttp("request", requestAttributes);
+                
+            }
             LOG.debug("CFMLLambdaContainerHandler handleRequest: " + req.getRequestURI());
             StreamLambdaHandler.getCFMLServlet().service(req, httpServletResponse);
             
+            
         } catch (Throwable t) {
             t.printStackTrace();
+
             LOG.error("CFMLLambdaContainerHandler Servlet Request Threw Exception: ");
             LOG.error(t);
             for (StackTraceElement st: t.getStackTrace()) {
                 LOG.error("STE:" + st.toString());               
+            }
+            if (seg != null) {  
+                ((Subsegment)seg).addException(t);
+            }
+        } finally {
+            if (StreamLambdaHandler.ENABLE_XRAY) {
+                AWSXRay.endSubsegment();
             }
         }
     }
@@ -113,9 +155,6 @@ public class CFMLLambdaContainerHandler<RequestType, ResponseType>
     @Override
     public void initialize()
             throws ContainerInitializationException {
-        
-                
-        
         
     }
 }

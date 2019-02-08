@@ -1,0 +1,1 @@
+Hello <cfoutput>#server.lucee.version#</cfoutput>
