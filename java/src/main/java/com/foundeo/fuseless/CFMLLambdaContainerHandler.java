@@ -72,7 +72,6 @@ public class CFMLLambdaContainerHandler<RequestType, ResponseType>
     protected void handleRequest(HttpServletRequest httpServletRequest, AwsHttpServletResponse httpServletResponse, Context lambdaContext)
             throws Exception {
                 
-        //httpServletRequest.setServletContext(new ServletContextWrapper(getServletContext()));
         RequestWrapper req = new RequestWrapper((javax.servlet.http.HttpServletRequest)httpServletRequest);
         req.setAttribute("lambdaContext", lambdaContext);
         Object seg = null;
