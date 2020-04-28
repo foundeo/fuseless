@@ -2,9 +2,7 @@ package com.foundeo.fuseless;
 
 
 import com.amazonaws.serverless.proxy.LogFormatter;
-import com.amazonaws.serverless.proxy.model.ApiGatewayRequestContext;
-
-
+import com.amazonaws.serverless.proxy.model.AwsProxyRequestContext;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -64,7 +62,7 @@ public class ApacheCombinedServletLogFormatter<ContainerRequestType extends Http
     public String format(ContainerRequestType servletRequest, ContainerResponseType servletResponse, SecurityContext ctx) {
         //LogFormat "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-agent}i\"" combined
         StringBuilder logLineBuilder = new StringBuilder();
-        ApiGatewayRequestContext gatewayContext = (ApiGatewayRequestContext)servletRequest.getAttribute(API_GATEWAY_CONTEXT_PROPERTY);
+        AwsProxyRequestContext gatewayContext = (AwsProxyRequestContext)servletRequest.getAttribute(API_GATEWAY_CONTEXT_PROPERTY);
 
         // %h
         try {
