@@ -13,11 +13,11 @@
 	</cfif>
 </cfsilent>
 <cfoutput>
+<cfset contentType = listFirst(contentType,';') />
 <pre>
 	#assert("cgi.request_method", url.requestMethod, cgi.request_method)#
 	#assert("requestBody", url.requestBody, reqData.content)#
 	#assert("Content-Type", url.requestContentType, contentType)#
-	
 </pre>
 </cfoutput>
 
