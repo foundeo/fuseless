@@ -1,38 +1,16 @@
 package com.foundeo.fuseless;
 
 import com.amazonaws.serverless.exceptions.ContainerInitializationException;
-import com.amazonaws.serverless.proxy.internal.testutils.Timer;
 import com.amazonaws.serverless.proxy.model.AwsProxyRequest;
 import com.amazonaws.serverless.proxy.model.AwsProxyResponse;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
-
-
-import javax.servlet.DispatcherType;
-import javax.servlet.FilterRegistration;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PrintStream;
-import java.io.ByteArrayOutputStream;
-import java.io.ByteArrayInputStream;
-import java.util.EnumSet;
-
+import lucee.loader.servlet.CFMLServlet;
 import org.apache.log4j.Logger;
 
-import java.io.File;
-import lucee.loader.engine.CFMLEngineFactory;
-import lucee.loader.engine.CFMLEngine;
-import javax.servlet.*;
+import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServlet;
-
-import com.amazonaws.xray.AWSXRay;
-import com.amazonaws.xray.entities.Subsegment;
-import com.amazonaws.xray.entities.Segment;
-
-
-import lucee.loader.servlet.CFMLServlet;
+import java.io.*;
 
 public class StreamLambdaHandler implements RequestStreamHandler {
     private static final Logger LOG = Logger.getLogger(StreamLambdaHandler.class);
