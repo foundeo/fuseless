@@ -3,13 +3,11 @@ package com.foundeo.fuseless;
 import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletRequest;
 
-
 public class RequestWrapper extends HttpServletRequestWrapper {
 
 	public RequestWrapper(HttpServletRequest request) {
 		super(request);
 	}
-
 	
 	@Override
     public String getServletPath() {
@@ -44,9 +42,6 @@ public class RequestWrapper extends HttpServletRequestWrapper {
         }
     }
 
-    
-
-    
     @Override
     public String getHeader(String name) {
         try {

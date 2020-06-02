@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [[ !$LUCEE_VERSION ]]; then
-	LUCEE_VERSION=5.3.1.87-RC
+	LUCEE_VERSION=5.3.5.92
 fi
 
 if [ -f "java/jars/lucee-light-$LUCEE_VERSION.jar" ]; then
@@ -9,6 +9,7 @@ if [ -f "java/jars/lucee-light-$LUCEE_VERSION.jar" ]; then
 else 
 	#download lucee jar
 	echo "Downloading lucee-light-$LUCEE_VERSION.jar"
+	echo "https://cdn.lucee.org/lucee-light-$LUCEE_VERSION.jar"
 	curl --location -o java/jars/lucee-light-$LUCEE_VERSION.jar https://cdn.lucee.org/lucee-light-$LUCEE_VERSION.jar
 	cp java/jars/lucee-light-$LUCEE_VERSION.jar test/jars/
 fi

@@ -3,7 +3,6 @@ package com.foundeo.fuseless;
 import javax.servlet.*;
 import javax.servlet.descriptor.JspConfigDescriptor;
 
-
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -54,8 +53,6 @@ public class ServletContextWrapper implements ServletContext {
     public int getEffectiveMajorVersion() {
         return this.servletContext.getEffectiveMajorVersion();
     }
-
-
 
     @Override
     public String getMimeType(String file) {

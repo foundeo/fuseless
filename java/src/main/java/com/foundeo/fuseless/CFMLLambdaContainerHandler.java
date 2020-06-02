@@ -1,51 +1,29 @@
 package com.foundeo.fuseless;
 
 import com.amazonaws.serverless.exceptions.ContainerInitializationException;
-import com.amazonaws.serverless.proxy.AwsProxyExceptionHandler;
-import com.amazonaws.serverless.proxy.AwsProxySecurityContextWriter;
-import com.amazonaws.serverless.proxy.ExceptionHandler;
-import com.amazonaws.serverless.proxy.RequestReader;
-import com.amazonaws.serverless.proxy.ResponseWriter;
-import com.amazonaws.serverless.proxy.SecurityContextWriter;
-import com.amazonaws.serverless.proxy.internal.testutils.Timer;
+import com.amazonaws.serverless.proxy.*;
+import com.amazonaws.serverless.proxy.internal.servlet.AwsHttpServletResponse;
+import com.amazonaws.serverless.proxy.internal.servlet.AwsLambdaServletContainerHandler;
+import com.amazonaws.serverless.proxy.internal.servlet.AwsProxyHttpServletRequestReader;
+import com.amazonaws.serverless.proxy.internal.servlet.AwsProxyHttpServletResponseWriter;
 import com.amazonaws.serverless.proxy.model.AwsProxyRequest;
 import com.amazonaws.serverless.proxy.model.AwsProxyResponse;
-import com.amazonaws.serverless.proxy.internal.servlet.*;
-
 import com.amazonaws.services.lambda.runtime.Context;
-
-
+import com.amazonaws.xray.AWSXRay;
+import com.amazonaws.xray.entities.Subsegment;
 import org.apache.log4j.Logger;
 
-
-import javax.servlet.DispatcherType;
-import javax.servlet.FilterRegistration;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.security.AccessController;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
-import java.util.EnumSet;
-import java.util.Enumeration;
-import java.util.concurrent.CountDownLatch;
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
-
-
-import com.amazonaws.xray.AWSXRay;
-import com.amazonaws.xray.entities.Segment;
-import com.amazonaws.xray.entities.Subsegment;
-
-import java.io.*;
+import java.util.concurrent.CountDownLatch;
 
 
 public class CFMLLambdaContainerHandler<RequestType, ResponseType>
-        extends AwsLambdaServletContainerHandler<RequestType, ResponseType, AwsProxyHttpServletRequest, AwsHttpServletResponse> {
+        extends AwsLambdaServletContainerHandler<RequestType, ResponseType, HttpServletRequest, AwsHttpServletResponse> {
 
     private static final Logger LOG = Logger.getLogger(CFMLLambdaContainerHandler.class);
-    
+
     /**
      * Returns a new instance of an CFMLLambdaContainerHandler initialized to work with <code>AwsProxyRequest</code>
      * and <code>AwsProxyResponse</code> objects.
@@ -64,10 +42,9 @@ public class CFMLLambdaContainerHandler<RequestType, ResponseType>
                                                                                          new AwsProxySecurityContextWriter(),
                                                                                          new AwsProxyExceptionHandler()
                                                                                          );
-
         newHandler.setLogFormatter(new ApacheCombinedServletLogFormatter<>());
 
-        
+
 
         return newHandler;
     }
@@ -75,33 +52,26 @@ public class CFMLLambdaContainerHandler<RequestType, ResponseType>
 
     public CFMLLambdaContainerHandler(Class<RequestType> requestTypeClass,
                                        Class<ResponseType> responseTypeClass,
-                                       RequestReader<RequestType, AwsProxyHttpServletRequest> requestReader,
+                                       RequestReader<RequestType, HttpServletRequest> requestReader,
                                        ResponseWriter<AwsHttpServletResponse, ResponseType> responseWriter,
                                        SecurityContextWriter<RequestType> securityContextWriter,
-                                       ExceptionHandler<ResponseType> exceptionHandler)
-            throws ContainerInitializationException {
+                                       ExceptionHandler<ResponseType> exceptionHandler) {
         super(requestTypeClass, responseTypeClass, requestReader, responseWriter, securityContextWriter, exceptionHandler);
-        
 
-
-        
-
-        
     }
 
-    
+
 
     @Override
-    protected AwsHttpServletResponse getContainerResponse(AwsProxyHttpServletRequest request, CountDownLatch latch) {
+    protected AwsHttpServletResponse getContainerResponse(HttpServletRequest request, CountDownLatch latch) {
         return new AwsHttpServletResponse(request, latch);
     }
 
 
     @Override
-    protected void handleRequest(AwsProxyHttpServletRequest httpServletRequest, AwsHttpServletResponse httpServletResponse, Context lambdaContext)
+    protected void handleRequest(HttpServletRequest httpServletRequest, AwsHttpServletResponse httpServletResponse, Context lambdaContext)
             throws Exception {
                 
-        httpServletRequest.setServletContext(new ServletContextWrapper(getServletContext()));
         RequestWrapper req = new RequestWrapper((javax.servlet.http.HttpServletRequest)httpServletRequest);
         req.setAttribute("lambdaContext", lambdaContext);
         Object seg = null;
@@ -150,7 +120,6 @@ public class CFMLLambdaContainerHandler<RequestType, ResponseType>
             }
         }
     }
-
 
     @Override
     public void initialize()
