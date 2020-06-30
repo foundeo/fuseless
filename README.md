@@ -15,28 +15,28 @@ Install Docker, Java, Gradle and AWS Sam CLI, then run `test.sh`
 
 ### Using FuseLess for non API Gateway Events
 
-You can also use FuseLess to process other lambda events besides those generated from API Gateway by using the `handleEventRequest` method in the `StreamLambdaHandler` class.
+You can also use FuseLess to process other lambda events besides those generated from API Gateway by using the `EventLambdaHandler` class. By default this class will attempt to invoke the CFML method `fuselessEvent(eventPayload, fuselessContext)` in `Application.cfc` 
+
 
 	FuselessExampleEvent:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: com.foundeo.fuseless.StreamLambdaHandler::handleEventRequest
+      Handler: com.foundeo.fuseless.EventLambdaHandler::handleRequest
       CodeUri: ./build/distributions/test.zip
       Runtime: java8
       Timeout: 100
       MemorySize: 512
 
-When the `handleEventRequest` method is used it will make the event payload avaliable within CFML by doing:
 
-	getLambdaContext().getEventPayload()
-
-The event payload will typically be a JSON string that you can then parse and work with. You can test generating events with `sam local generate-event` for example:
+The `eventPayload` will typically be a JSON string that you can then parse and work with. You can test generating events with `sam local generate-event` for example:
 
 	sam local generate-event s3 put > /tmp/test-event.json
 
 Now you can use sam local to invoke the event for testing: 
 
 	sam local invoke FuselessExampleEvent --event /tmp/test-event.json 
+
+By default Fuseless will attempt to invoke the function `fuselessEvent`   
 
 ## Support, Questions, Issues
 
