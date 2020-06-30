@@ -22,7 +22,7 @@ Resources:
   FuselessTestEvent:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: com.foundeo.fuseless.StreamLambdaHandler::handleEventRequest
+      Handler: com.foundeo.fuseless.EventLambdaHandler::handleRequest
       CodeUri: ./build/distributions/test.zip
       Runtime: java8
       Timeout: 100

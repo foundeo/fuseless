@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [[ !$LUCEE_VERSION ]]; then
-	LUCEE_VERSION=5.3.5.92
+	LUCEE_VERSION=5.3.6.61
 fi
 
 if [ -f "java/jars/lucee-light-$LUCEE_VERSION.jar" ]; then
@@ -39,7 +39,7 @@ sleep 5
 
 
 echo "Running: http://127.0.0.1:3003/assert.cfm"
-http_code=$(curl --verbose -s --header "Content-Type: application/json" --request POST --data '{"x":1}' -o /tmp/result.txt -w '%{http_code}' 'http://127.0.0.1:3003/assert.cfm?requestMethod=POST&requestContentType=application/json&requestBody=%7B%22x%22%3A1%7D';)
+http_code=$(curl --verbose -s --header "Content-Type: application/json" --request POST --data '{"x":1}' -o /tmp/result.txt -w '%{http_code}' 'http://127.0.0.1:3003/assert.cfm?requestMethod=POST&requestContentType=application/json&requestBody=%7B%22x%22%3A1%7D&contentLength=7';)
 echo "Finished with Status: $http_code "
 echo -e "\n-----\n"
 #output the result
@@ -61,7 +61,9 @@ echo "Testing Events"
 echo -e "\n-----\n"
 
 sam local generate-event s3 put > /tmp/test-event.json
-sam local invoke FuselessTestEvent --event /tmp/test-event.json
+sam local invoke FuselessTestEvent --event /tmp/test-event.json 
+
+
 
 echo -e "\n-----\n"
 

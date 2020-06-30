@@ -5,8 +5,20 @@ component {
 	this.clientManagement=false;
 	this.setClientCookies=false;
 
-	public function onRequest(string path) {
-		include path;
+	public function onRequest(string path="") {
+		if (arguments.path == "") {
+			path="/test.cfm";
+		}
+		logger("REQ: #arguments.path#");
+		include path;	
+	}
+
+	public string function fuselessEvent(event, fuselessContext) {
+		if (!isJSON(event)) {
+			return "Event Payload was not JSON";
+		}
+		local.eventObject = deserializeJSON(event);
+		return "Event Name: #local.eventObject.Records[1].eventName#, AWS Request ID: #getLambdaContext().getAwsRequestId()#";
 	}
 
 	public function getLambdaContext() {

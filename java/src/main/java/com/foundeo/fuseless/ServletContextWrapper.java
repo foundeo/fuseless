@@ -133,7 +133,7 @@ public class ServletContextWrapper implements ServletContext {
 
     @Override
     public String getServerInfo() {
-        return this.servletContext.getServerInfo() + "; Foundeo FuseLess v0.0.8";
+        return this.servletContext.getServerInfo() + "; Foundeo FuseLess v0.1.0";
     }
 
     @Override

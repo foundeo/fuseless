@@ -6,6 +6,7 @@ import com.amazonaws.serverless.proxy.model.AwsProxyResponse;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
 import lucee.loader.servlet.CFMLServlet;
+
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletConfig;
@@ -55,6 +56,11 @@ public class StreamLambdaHandler implements RequestStreamHandler {
                 } else {
                     System.setProperty("lucee.extensions.install", lucee_extensions_install);    
                 }
+                String lucee_controller_disabled = System.getenv("LUCEE_CONTROLLER_DISABLED");
+                if (lucee_controller_disabled != null) {
+                    System.setProperty("lucee.controller.disabled", lucee_controller_disabled);    
+                }
+                
                 
                 //felix.storage.clean?
                 //felix configuration props: http://felix.apache.org/documentation/subprojects/apache-felix-framework/apache-felix-framework-configuration-properties.html
@@ -116,24 +122,11 @@ public class StreamLambdaHandler implements RequestStreamHandler {
 
     public void handleEventRequest(InputStream inputStream, OutputStream outputStream, Context context)
             throws IOException {
-        
-        FuseLessContext ctx = new FuseLessContext(context);
-
-        ByteArrayOutputStream result = new ByteArrayOutputStream();
-        byte[] buffer = new byte[1024];
-        int length;
-        while ((length = inputStream.read(buffer)) != -1) {
-            result.write(buffer, 0, length);
-        }
-        String inputString = result.toString("UTF-8");
-        inputStream.close();
-        
-        ctx.setEventPayload(inputString);
-
-        InputStream in = new ByteArrayInputStream(inputString.getBytes("UTF-8"));
-
-        handler.proxyStream(in, outputStream, ctx);
+        EventLambdaHandler handler = new EventLambdaHandler();
+        handler.handleRequest(inputStream, outputStream, context);
     }
+
+    
 
 
 }
