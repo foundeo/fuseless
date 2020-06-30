@@ -4,7 +4,9 @@ python:
 branches:
   only: master
 install:
-- pip install aws-sam-cli
+- brew tap aws/tap
+- brew install aws-sam-cli
+- sam --version
 before_script:
 - chmod +x ./test.sh
 script:
