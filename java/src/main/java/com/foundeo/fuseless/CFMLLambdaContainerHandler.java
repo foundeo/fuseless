@@ -11,7 +11,7 @@ import com.amazonaws.serverless.proxy.model.AwsProxyResponse;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.xray.AWSXRay;
 import com.amazonaws.xray.entities.Subsegment;
-import org.apache.log4j.Logger;
+
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
@@ -22,8 +22,7 @@ import java.util.concurrent.CountDownLatch;
 public class CFMLLambdaContainerHandler<RequestType, ResponseType>
         extends AwsLambdaServletContainerHandler<RequestType, ResponseType, HttpServletRequest, AwsHttpServletResponse> {
 
-    private static final Logger LOG = Logger.getLogger(CFMLLambdaContainerHandler.class);
-
+    
     /**
      * Returns a new instance of an CFMLLambdaContainerHandler initialized to work with <code>AwsProxyRequest</code>
      * and <code>AwsProxyResponse</code> objects.
@@ -99,18 +98,15 @@ public class CFMLLambdaContainerHandler<RequestType, ResponseType>
                 ((Subsegment)seg).putHttp("request", requestAttributes);
                 
             }
-            LOG.debug("CFMLLambdaContainerHandler handleRequest: " + req.getRequestURI());
+            //LOG.debug("CFMLLambdaContainerHandler handleRequest: " + req.getRequestURI());
             StreamLambdaHandler.getCFMLServlet().service(req, httpServletResponse);
             
             
         } catch (Throwable t) {
             t.printStackTrace();
 
-            LOG.error("CFMLLambdaContainerHandler Servlet Request Threw Exception: ");
-            LOG.error(t);
-            for (StackTraceElement st: t.getStackTrace()) {
-                LOG.error("STE:" + st.toString());               
-            }
+            StreamLambdaHandler.log("CFMLLambdaContainerHandler Servlet Request Threw Exception: ", t);
+            
             if (seg != null) {  
                 ((Subsegment)seg).addException(t);
             }

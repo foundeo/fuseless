@@ -7,7 +7,7 @@ Resources:
     Properties:
       Handler: com.foundeo.fuseless.StreamLambdaHandler
       CodeUri: ./build/distributions/test.zip
-      Runtime: java8
+      Runtime: java11
       Timeout: 100
       MemorySize: 512
       Events:
@@ -24,7 +24,7 @@ Resources:
     Properties:
       Handler: com.foundeo.fuseless.EventLambdaHandler::handleRequest
       CodeUri: ./build/distributions/test.zip
-      Runtime: java8
+      Runtime: java11
       Timeout: 100
       MemorySize: 512
       Environment:

@@ -15,8 +15,8 @@ dependencies {
         'com.amazonaws.serverless:aws-serverless-java-container-core:1.5',
         'javax.servlet.jsp:javax.servlet.jsp-api:2.3.1',
         'javax.el:javax.el-api:3.0.0',
-        'com.amazonaws:aws-lambda-java-log4j:1.0.1',
-        'com.amazonaws:aws-xray-recorder-sdk-core:2.5.0'
+        'com.amazonaws:aws-xray-recorder-sdk-core:2.5.0',
+        'com.amazonaws:aws-lambda-java-log4j:1.0.1'
     )
     compile fileTree(dir: 'jars', include: '*.jar')
 }

@@ -7,15 +7,19 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
 import lucee.loader.servlet.CFMLServlet;
 
-import org.apache.log4j.Logger;
+import com.amazonaws.services.lambda.runtime.LambdaRuntime;
+import com.amazonaws.services.lambda.runtime.LambdaLogger;
+
+import java.lang.StringBuilder;
+
 
 import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServlet;
 import java.io.*;
 
 public class StreamLambdaHandler implements RequestStreamHandler {
-    private static final Logger LOG = Logger.getLogger(StreamLambdaHandler.class);
-
+    private static final LambdaLogger logger = LambdaRuntime.getLogger();
+    
     private static CFMLLambdaContainerHandler<AwsProxyRequest, AwsProxyResponse> handler;
 
     private static HttpServlet cfmlServlet = null;
@@ -24,16 +28,27 @@ public class StreamLambdaHandler implements RequestStreamHandler {
 
     static {
         try {
+            logger.log("FuseLess: StreamLambdaHandler initializing");
+
+            //load Log4j
+
+
             if (System.getenv("FUSELESS_ENABLE_XRAY") != null && System.getenv("FUSELESS_ENABLE_XRAY").equals("true")) {
                 ENABLE_XRAY = true;
             }
-            LOG.info("StreamLambdaHandler initializing");
+            
+            
+
+
+
+
             handler = CFMLLambdaContainerHandler.getAwsProxyHandler();
             
+
             // we use the onStartup method of the handler to register our custom filter
             handler.onStartup(servletContext -> {
                 long startTime = System.currentTimeMillis();
-                LOG.info("StreamLambdaHandler onStartup");
+                log("StreamLambdaHandler onStartup");
                 PrintStream systemOUT = System.out;
                 try {
                     //redirecting System.out to a file because lucee logs a bunch of stuff with it
@@ -45,7 +60,7 @@ public class StreamLambdaHandler implements RequestStreamHandler {
                         }
                     }));
                 } catch (Exception e) {
-                    LOG.error("Error redirecting system.out", e);
+                    log("FuseLess: Error redirecting system.out", e);
                 }
 
                 System.setProperty("lucee.web.dir", "/tmp/lucee/web/");
@@ -77,32 +92,53 @@ public class StreamLambdaHandler implements RequestStreamHandler {
                     System.setProperty("felix.cache.bufsize", felix_cache_bufsize);
                 }
                 try {
-
                     new File("/tmp/lucee/web/").mkdirs();
                     StreamLambdaHandler.cfmlServlet = new CFMLServlet();
                     ServletConfig servletConfig = new CFMLServletConfig(new ServletContextWrapper(servletContext));
+                    
                     cfmlServlet.init(servletConfig);
                     //CFMLEngine cfmlEngine = CFMLEngineFactory.getInstance(servletConfig);
                 } catch (Throwable t) {
-                    LOG.error("StreamLambdaHandler onStartup exception", t);
+                    log("onStartup exception", t);
                 }
                 long startupComplete = System.currentTimeMillis();
                 try {
                     //put System.out back to default PrintStream
                     System.setOut(systemOUT);
                 } catch (Exception e) {
-                    LOG.error("Error putting back system.out", e);
+                    log("Error putting back system.out: ", e);
                 }
-                LOG.info("StreamLambdaHandler onStartup complete: " + (startupComplete-startTime));
+                log("onStartup complete: " + (startupComplete-startTime));
             });
         } catch (ContainerInitializationException e) {
             // if we fail here. We re-throw the exception to force another cold start
+            log("ContainerInitializationException: ", e);
             e.printStackTrace();
             
-            throw new RuntimeException("StreamLambdaHandler Could not initialize the container", e);
+            throw new RuntimeException("Could not initialize the container", e);
         } finally {
             
         }
+    }
+
+    public static final void log(String msg) {
+        StreamLambdaHandler.log(msg, null);
+    }
+
+    public static final void log(String msg, Throwable t) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("FuseLess: StreamLambdaHandler: ");
+        sb.append(msg);
+        if (t != null) {
+            sb.append(" :: ");
+            sb.append(t.getMessage());
+            for (StackTraceElement e : t.getStackTrace()) {
+                sb.append(e.toString());
+            }    
+        }
+        sb.append(10);
+        logger.log(sb.toString());
+
     }
 
     public static final HttpServlet getCFMLServlet() {

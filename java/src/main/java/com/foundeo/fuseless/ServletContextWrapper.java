@@ -11,13 +11,11 @@ import java.util.Set;
 import java.util.EventListener;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
 
 public class ServletContextWrapper implements ServletContext {
 
     private ServletContext servletContext;
 
-    private static final Logger LOG = Logger.getLogger(ServletContextWrapper.class);
     
     public ServletContextWrapper(ServletContext servletContext) {
         this.servletContext = servletContext;
@@ -133,7 +131,7 @@ public class ServletContextWrapper implements ServletContext {
 
     @Override
     public String getServerInfo() {
-        return this.servletContext.getServerInfo() + "; Foundeo FuseLess v0.1.0";
+        return this.servletContext.getServerInfo() + "; Foundeo FuseLess v0.2.0";
     }
 
     @Override
