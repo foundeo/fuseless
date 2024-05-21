@@ -1,0 +1,32 @@
+
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v4
+      - name: Setup java
+        uses: actions/setup-java@v4
+        with:
+          distribution: coretto
+          java-version: 11
+      - name: test
+        run: |
+            brew tap aws/tap
+            brew install aws-sam-cli
+            sam --version
+            chmod +x ./test.sh
+            export AWS_ACCESS_KEY_ID=EMPTY
+            export AWS_SECRET_ACCESS_KEY=EMPTY
+            export AWS_DEFAULT_REGION=us-east-1
+            ./test.sh
+          
