@@ -1,6 +1,6 @@
 # FuseLess
 
-[![Build Status](https://travis-ci.org/foundeo/fuseless.svg?branch=master)](https://travis-ci.org/foundeo/fuseless)
+![Build Status](https://github.com/foundeo/fuseless/actions/workflows/ci.yml/badge.svg)
 
 
 FuseLess is a set of tools and code for running CFML applications on serverless computing platforms (such as AWS Lambda).
