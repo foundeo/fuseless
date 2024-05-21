@@ -11,21 +11,21 @@ repositories {
 }
 
 dependencies {
-    compile (
-        'com.amazonaws.serverless:aws-serverless-java-container-core:1.5',
+    implementation (
+        'com.amazonaws.serverless:aws-serverless-java-container-core:1.9.4',
         'javax.servlet.jsp:javax.servlet.jsp-api:2.3.1',
         'javax.el:javax.el-api:3.0.0',
-        'com.amazonaws:aws-xray-recorder-sdk-core:2.5.0',
-        'com.amazonaws:aws-lambda-java-log4j:1.0.1'
+        'com.amazonaws:aws-xray-recorder-sdk-core:2.15.3',
+        'com.amazonaws:aws-lambda-java-log4j2:1.6.0'
     )
-    compile fileTree(dir: 'jars', include: '*.jar')
+    implementation fileTree(dir: 'jars', include: '*.jar')
 }
 
 task buildZip(type: Zip) {
     from compileJava
     from processResources              
     into('lib') {
-        from configurations.runtime
+        from(configurations.compileClasspath)
     }           
 }
 
