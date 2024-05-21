@@ -19,10 +19,12 @@ jobs:
         with:
           distribution: corretto
           java-version: 11
+      - name: Setup aws-sam-cli
+        uses: aws-actions/setup-sam@v2
+        with:
+          use-installer: true
       - name: test
         run: |
-            brew tap aws/tap
-            brew install aws-sam-cli
             sam --version
             chmod +x ./test.sh
             export AWS_ACCESS_KEY_ID=EMPTY
