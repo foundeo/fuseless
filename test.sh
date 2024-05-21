@@ -75,8 +75,9 @@ echo -e "\n-----\n"
 echo "DONE TESTING"
 ps
 #ensure everything is terminated 
-killall 
-
+killall sam
+killall java
+ps
 
 
 exit 0
