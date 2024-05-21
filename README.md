@@ -23,9 +23,9 @@ You can also use FuseLess to process other lambda events besides those generated
     Properties:
       Handler: com.foundeo.fuseless.EventLambdaHandler::handleRequest
       CodeUri: ./build/distributions/test.zip
-      Runtime: java8
+      Runtime: java11
       Timeout: 100
-      MemorySize: 512
+      MemorySize: 1024
 
 
 The `eventPayload` will typically be a JSON string that you can then parse and work with. You can test generating events with `sam local generate-event` for example:

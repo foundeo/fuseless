@@ -47,10 +47,13 @@ cat /tmp/result.txt
 
 echo -e "\n-----\n"
 
+echo "SAM PID: $SAM_PID"
 kill $SAM_PID
+ps 
 
 if [ "$http_code" -ne 222 ]; then
-	#fail if status code is not 200
+	#fail if status code is not 222
+	echo "Failed Status Code was not 222"
     exit 1
 fi
 
@@ -61,14 +64,18 @@ echo "Testing Events"
 echo -e "\n-----\n"
 
 sam local generate-event s3 put > /tmp/test-event.json
+echo "Created Test Event"
+cat /tmp/test-event.json
 sam local invoke FuselessTestEvent --event /tmp/test-event.json 
 
 
 
 echo -e "\n-----\n"
 
-
-
+echo "DONE TESTING"
+ps
+#ensure everything is terminated 
+killall 
 
 
 
