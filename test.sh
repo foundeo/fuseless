@@ -73,11 +73,10 @@ sam local invoke FuselessTestEvent --event /tmp/test-event.json
 echo -e "\n-----\n"
 
 echo "DONE TESTING"
-ps
+pstree
 #ensure everything is terminated 
 killall sam
-killall java
-ps
+ps -f
 
 
 exit 0
