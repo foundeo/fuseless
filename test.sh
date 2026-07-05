@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [[ !$LUCEE_VERSION ]]; then
+if [[ -z "$LUCEE_VERSION" ]]; then
 	LUCEE_VERSION=5.4.5.23
 fi
 
@@ -33,9 +33,19 @@ sam local start-api --port 3003 --debug &
 SAM_PID=$!
 
 
-#give it a chance to startup
-echo -e "Sleeping for 5...\n"
-sleep 5
+echo "Waiting for SAM local to be ready..."
+max_wait=60
+elapsed=0
+until curl -s -o /dev/null http://127.0.0.1:3003/ || [ $elapsed -ge $max_wait ]; do
+    sleep 2
+    elapsed=$((elapsed + 2))
+done
+
+if [ $elapsed -ge $max_wait ]; then
+    echo "SAM local did not start within ${max_wait}s"
+    kill $SAM_PID
+    exit 1
+fi
 
 
 echo "Running: http://127.0.0.1:3003/assert.cfm"
