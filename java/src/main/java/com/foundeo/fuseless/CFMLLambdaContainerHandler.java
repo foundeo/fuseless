@@ -39,7 +39,7 @@ public class CFMLLambdaContainerHandler<RequestType, ResponseType>
                                                                                          new AwsProxyHttpServletRequestReader(),
                                                                                          new AwsProxyHttpServletResponseWriter(),
                                                                                          new AwsProxySecurityContextWriter(),
-                                                                                         new AwsProxyExceptionHandler()
+                                                                                         new FuseLessExceptionHandler()
                                                                                          );
         newHandler.setLogFormatter(new ApacheCombinedServletLogFormatter<>());
 
