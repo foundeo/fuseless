@@ -5,7 +5,7 @@ import com.amazonaws.serverless.proxy.model.AwsProxyRequest;
 import com.amazonaws.serverless.proxy.model.AwsProxyResponse;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
-import lucee.loader.servlet.CFMLServlet;
+import lucee.loader.servlet.jakarta.CFMLServlet;
 
 import com.amazonaws.services.lambda.runtime.LambdaRuntime;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
@@ -13,8 +13,8 @@ import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import java.lang.StringBuilder;
 
 
-import javax.servlet.ServletConfig;
-import javax.servlet.http.HttpServlet;
+import jakarta.servlet.ServletConfig;
+import jakarta.servlet.http.HttpServlet;
 import java.io.*;
 
 public class StreamLambdaHandler implements RequestStreamHandler {

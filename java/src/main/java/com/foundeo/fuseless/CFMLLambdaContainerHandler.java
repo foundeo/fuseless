@@ -13,7 +13,7 @@ import com.amazonaws.xray.AWSXRay;
 import com.amazonaws.xray.entities.Subsegment;
 
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
@@ -39,7 +39,7 @@ public class CFMLLambdaContainerHandler<RequestType, ResponseType>
                                                                                          new AwsProxyHttpServletRequestReader(),
                                                                                          new AwsProxyHttpServletResponseWriter(),
                                                                                          new AwsProxySecurityContextWriter(),
-                                                                                         new AwsProxyExceptionHandler()
+                                                                                         new FuseLessExceptionHandler()
                                                                                          );
         newHandler.setLogFormatter(new ApacheCombinedServletLogFormatter<>());
 
@@ -71,7 +71,7 @@ public class CFMLLambdaContainerHandler<RequestType, ResponseType>
     protected void handleRequest(HttpServletRequest httpServletRequest, AwsHttpServletResponse httpServletResponse, Context lambdaContext)
             throws Exception {
                 
-        RequestWrapper req = new RequestWrapper((javax.servlet.http.HttpServletRequest)httpServletRequest);
+        RequestWrapper req = new RequestWrapper((jakarta.servlet.http.HttpServletRequest)httpServletRequest);
         req.setAttribute("lambdaContext", lambdaContext);
         Object seg = null;
         try {
