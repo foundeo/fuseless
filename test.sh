@@ -6,7 +6,7 @@ fi
 
 if [ -f "java/jars/lucee-light-$LUCEE_VERSION.jar" ]; then
 	echo "lucee-light-$LUCEE_VERSION.jar already there, skipping download"
-else 
+else
 	#download lucee jar
 	echo "Downloading lucee-light-$LUCEE_VERSION.jar"
 	echo "https://cdn.lucee.org/lucee-light-$LUCEE_VERSION.jar"
@@ -14,6 +14,16 @@ else
 	cp java/jars/lucee-light-$LUCEE_VERSION.jar test/jars/
 fi
 
+# Pin Gradle explicitly instead of relying on whatever version the CI runner
+# happens to have preinstalled.
+GRADLE_VERSION=8.14.5
+if [ ! -d "/opt/gradle/gradle-$GRADLE_VERSION" ]; then
+	echo "Downloading gradle-$GRADLE_VERSION"
+	wget -q https://services.gradle.org/distributions/gradle-$GRADLE_VERSION-bin.zip -P /tmp
+	sudo unzip -q -d /opt/gradle /tmp/gradle-$GRADLE_VERSION-bin.zip
+fi
+export GRADLE_HOME=/opt/gradle/gradle-$GRADLE_VERSION
+export PATH=${GRADLE_HOME}/bin:${PATH}
 
 cd java
 
