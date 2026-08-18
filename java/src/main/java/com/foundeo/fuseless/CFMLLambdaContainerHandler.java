@@ -106,13 +106,72 @@ public class CFMLLambdaContainerHandler<RequestType, ResponseType>
             t.printStackTrace();
 
             StreamLambdaHandler.log("CFMLLambdaContainerHandler Servlet Request Threw Exception: ", t);
-            
-            if (seg != null) {  
+
+            if (seg != null) {
                 ((Subsegment)seg).addException(t);
             }
+
+            // Send a 500 so the client learns the request failed.
+            //
+            // Without this, the finally block below commits the response with no
+            // status ever set. AwsHttpServletResponse.getStatus() returns
+            // `statusCode <= 0 ? SC_OK : statusCode`, so a servlet that threw
+            // before setting a status is reported to the client as HTTP 200 with
+            // an empty body — a failure that looks like a success to the caller
+            // and to any monitoring keyed on status codes.
+            //
+            // sendError() routes through flushBuffer(), which is the only caller
+            // of countDown() on the latch, so this also releases the waiting
+            // thread on its own.
+            try {
+                if (!httpServletResponse.isCommitted()) {
+                    httpServletResponse.sendError(500);
+                }
+            } catch (Throwable responseFailure) {
+                StreamLambdaHandler.log("Failed to send error response: ", responseFailure);
+            }
+
+            // Do not absorb JVM-level errors. An OutOfMemoryError or
+            // StackOverflowError swallowed here leaves the container in an
+            // unknown state while reporting a normal response; letting it
+            // propagate lets the Lambda runtime fail the invocation loudly and
+            // replace the execution environment.
+            if (t instanceof Error) {
+                throw (Error) t;
+            }
+
         } finally {
             if (StreamLambdaHandler.ENABLE_XRAY) {
                 AWSXRay.endSubsegment();
+            }
+
+            // Guarantee the response is committed before we return.
+            //
+            // AwsHttpServletResponse.flushBuffer() is the ONLY caller of
+            // countDown() on the latch that LambdaContainerHandler.proxy() is
+            // blocked on. If the servlet returns without committing, nothing
+            // releases that latch and the invocation hangs until the Lambda
+            // runtime interrupts it — surfacing as an InterruptedException at
+            // CountDownLatch.await() and a 5xx to the client.
+            //
+            // aws-serverless-java-container guards against this itself, at the
+            // end of AwsLambdaServletContainerHandler.doFilter(). FuseLess calls
+            // service() directly rather than going through the filter chain — a
+            // deliberate choice, since a CFML container has no servlet filters to
+            // apply — so that guard is never reached and this replicates it.
+            //
+            // Also covers the case where sendError() above failed, and the case
+            // where the servlet returned normally without committing.
+            try {
+                if (!httpServletResponse.isCommitted()) {
+                    StreamLambdaHandler.log("Response not committed after service(); forcing flush. path=" + req.getRequestURI());
+                    httpServletResponse.flushBuffer();
+                }
+            } catch (Throwable flushError) {
+                // Never let the guard itself break the request. If the flush
+                // fails, the latch stays uncounted and the original hang
+                // returns — no worse than not having tried.
+                StreamLambdaHandler.log("Failed to force flush of uncommitted response: ", flushError);
             }
         }
     }
