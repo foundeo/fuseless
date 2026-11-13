@@ -5,10 +5,11 @@ import com.amazonaws.serverless.proxy.LogFormatter;
 
 import com.amazonaws.serverless.proxy.model.AwsProxyRequest;
 import com.amazonaws.serverless.proxy.model.AwsProxyRequestContext;
+import com.amazonaws.serverless.proxy.model.RequestSource;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.core.SecurityContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.ws.rs.core.SecurityContext;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -78,7 +79,7 @@ public class ApacheCombinedServletLogFormatter<ContainerRequestType extends Http
         logLineBuilder.append(" ");
 
         // %l
-        if (gatewayContext != null && req.getRequestSource() == AwsProxyRequest.RequestSource.API_GATEWAY) {
+        if (gatewayContext != null && req.getRequestSource() == RequestSource.API_GATEWAY) {
             if (gatewayContext.getIdentity().getUserArn() != null) {
                 logLineBuilder.append(gatewayContext.getIdentity().getUserArn());
             } else {

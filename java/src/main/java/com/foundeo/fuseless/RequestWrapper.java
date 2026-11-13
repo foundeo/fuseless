@@ -1,7 +1,7 @@
 package com.foundeo.fuseless;
 
-import javax.servlet.http.HttpServletRequestWrapper;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequestWrapper;
+import jakarta.servlet.http.HttpServletRequest;
 
 public class RequestWrapper extends HttpServletRequestWrapper {
 

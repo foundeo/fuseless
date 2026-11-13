@@ -1,7 +1,7 @@
 package com.foundeo.fuseless;
 
-import javax.servlet.*;
-import javax.servlet.descriptor.JspConfigDescriptor;
+import jakarta.servlet.*;
+import jakarta.servlet.descriptor.JspConfigDescriptor;
 
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -86,32 +86,8 @@ public class ServletContextWrapper implements ServletContext {
     }
 
     @Override
-    @Deprecated
-    public Servlet getServlet(String name) throws ServletException {
-        return this.servletContext.getServlet(name);
-    }
-
-    @Override
-    @Deprecated
-    public Enumeration getServlets() {
-        return this.servletContext.getServlets();
-    }
-
-    @Override
-    @Deprecated
-    public Enumeration getServletNames() {
-        return this.servletContext.getServletNames();
-    }
-
-    @Override
     public void log(String msg) {
         this.servletContext.log(msg);
-    }
-
-    @Override
-    @Deprecated
-    public void log(Exception exception, String msg) {
-        this.servletContext.log(exception, msg);
     }
 
     @Override
@@ -190,6 +166,12 @@ public class ServletContextWrapper implements ServletContext {
     @Override
     public ServletRegistration.Dynamic addServlet(String s, Class<? extends Servlet> aClass) {
         return this.servletContext.addServlet(s, aClass);
+    }
+
+
+    @Override
+    public ServletRegistration.Dynamic addJspFile(String s, String s1) {
+        return this.servletContext.addJspFile(s, s1);
     }
 
 
@@ -317,6 +299,42 @@ public class ServletContextWrapper implements ServletContext {
     @Override
     public String getVirtualServerName() {
         return this.servletContext.getVirtualServerName();
+    }
+
+
+    @Override
+    public int getSessionTimeout() {
+        return this.servletContext.getSessionTimeout();
+    }
+
+
+    @Override
+    public void setSessionTimeout(int sessionTimeout) {
+        this.servletContext.setSessionTimeout(sessionTimeout);
+    }
+
+
+    @Override
+    public String getRequestCharacterEncoding() {
+        return this.servletContext.getRequestCharacterEncoding();
+    }
+
+
+    @Override
+    public void setRequestCharacterEncoding(String encoding) {
+        this.servletContext.setRequestCharacterEncoding(encoding);
+    }
+
+
+    @Override
+    public String getResponseCharacterEncoding() {
+        return this.servletContext.getResponseCharacterEncoding();
+    }
+
+
+    @Override
+    public void setResponseCharacterEncoding(String encoding) {
+        this.servletContext.setResponseCharacterEncoding(encoding);
     }
 
 

@@ -1,12 +1,12 @@
 #!/bin/bash
 
-if [[ !$LUCEE_VERSION ]]; then
-	LUCEE_VERSION=5.4.5.23
+if [[ -z "$LUCEE_VERSION" ]]; then
+	LUCEE_VERSION=8.0.0.304
 fi
 
 if [ -f "java/jars/lucee-light-$LUCEE_VERSION.jar" ]; then
 	echo "lucee-light-$LUCEE_VERSION.jar already there, skipping download"
-else 
+else
 	#download lucee jar
 	echo "Downloading lucee-light-$LUCEE_VERSION.jar"
 	echo "https://cdn.lucee.org/lucee-light-$LUCEE_VERSION.jar"
@@ -14,6 +14,16 @@ else
 	cp java/jars/lucee-light-$LUCEE_VERSION.jar test/jars/
 fi
 
+# Pin Gradle explicitly instead of relying on whatever version the CI runner
+# happens to have preinstalled.
+GRADLE_VERSION=8.14.5
+if [ ! -d "/opt/gradle/gradle-$GRADLE_VERSION" ]; then
+	echo "Downloading gradle-$GRADLE_VERSION"
+	wget -q https://services.gradle.org/distributions/gradle-$GRADLE_VERSION-bin.zip -P /tmp
+	sudo unzip -q -d /opt/gradle /tmp/gradle-$GRADLE_VERSION-bin.zip
+fi
+export GRADLE_HOME=/opt/gradle/gradle-$GRADLE_VERSION
+export PATH=${GRADLE_HOME}/bin:${PATH}
 
 cd java
 
@@ -33,9 +43,19 @@ sam local start-api --port 3003 --debug &
 SAM_PID=$!
 
 
-#give it a chance to startup
-echo -e "Sleeping for 5...\n"
-sleep 5
+echo "Waiting for SAM local to be ready..."
+max_wait=60
+elapsed=0
+until curl -s -o /dev/null http://127.0.0.1:3003/ || [ $elapsed -ge $max_wait ]; do
+    sleep 2
+    elapsed=$((elapsed + 2))
+done
+
+if [ $elapsed -ge $max_wait ]; then
+    echo "SAM local did not start within ${max_wait}s"
+    kill $SAM_PID
+    exit 1
+fi
 
 
 echo "Running: http://127.0.0.1:3003/assert.cfm"
