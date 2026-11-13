@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [[ -z "$LUCEE_VERSION" ]]; then
-	LUCEE_VERSION=7.0.4.34
+	LUCEE_VERSION=8.0.0.304
 fi
 
 if [ -f "java/jars/lucee-light-$LUCEE_VERSION.jar" ]; then
